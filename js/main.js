@@ -1,5 +1,4 @@
-//
-// console.log('online', canvas)
+//By Otuma.
 const textOfCoodinate = document.getElementById('text');
 const canvas = document.getElementById("canvas");
 const canvasHeight = 900;
@@ -33,7 +32,7 @@ function draw(x,y){
 
 // On mouse click
 canvas.addEventListener('click', (e)=>{
-	paintCellUsingXYCoodinate(ctx, e.x, e.y, 'blue')
+	paintCellUsingXYCoordinate(ctx, e.x, e.y, 'blue')
 
 });
 
@@ -51,8 +50,8 @@ function paintCellUsingArrayIndex(i, j, color){
 };
 
 
-// Paint cell using coodinates e.g from mouser click
-function paintCellUsingXYCoodinate(context, x, y, color){
+// Paint cell using coodinates e.g from mouse click
+function paintCellUsingXYCoordinate(context, x, y, color){
 	context.fillStyle = color;
 	context.fillRect(roundToNearest0(x), roundToNearest0(y), n-1, n-1);
 };
