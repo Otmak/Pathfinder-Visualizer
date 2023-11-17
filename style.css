@@ -8,3 +8,14 @@ body{
     align-items: center;*/
     font-family: Courier New, monospace;
 }
+
+canvas{
+	cursor: pointer;
+}
+
+button{
+	cursor: pointer;
+	height: 50px;
+	position: fixed;
+	right: 0;
+}
