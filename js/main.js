@@ -10,6 +10,9 @@ const ctx = canvas.getContext("2d");
 let startNode;
 let selectedAlgorithm;
 const nth = 30;
+let isMousedown = false;
+// 665351
+let setOfMouseDownNodes = {}
 
 const g = new Grid(ctx, 900, 900, 30, 30)
 g.draw(0,0)
@@ -26,16 +29,42 @@ getButtons.addEventListener('click',(e)=>{
 canvas.addEventListener('click', (e)=>{
 	let x = roundToNearestNTH(e.x);
 	let y = roundToNearestNTH(e.y);
+	let node = g.getNode(x, y);
 	if(e.shiftKey){
-		let node = g.getNode(x, y);
 		node.goal = true;
 		return g.paintNode(x, y, '#d1572e')
 	}
+	if(!node.goal){
+		node.isTraversable = false;
+		g.paintNode(x, y, '#665351');
+	}
+
 });
 
 
 canvas.addEventListener('mousemove', (e)=>{
 	textOfCoodinate.innerText = `x:${e.x}  y:${e.y}`;
+	let x = roundToNearestNTH(e.x);
+	let y = roundToNearestNTH(e.y);
+	let node = g.getNode(x, y);
+	if(isMousedown&& !node.goal ){
+		// let node = g.getNode(x, y);
+		node.isTraversable = false;
+		g.paintNode(x, y, '#665351');
+	}
+
+});
+
+
+canvas.addEventListener('mousedown',(e)=>{
+	let x = roundToNearestNTH(e.x);
+	let y = roundToNearestNTH(e.y);
+	isMousedown = true;
+})
+
+
+canvas.addEventListener('mouseup', (e)=>{
+		isMousedown = false;
 });
 
 
@@ -83,7 +112,7 @@ function dfs(node){
 			setTimeout(runDFS, 80)
 		}
 	}
-	runDFS()
+	runDFS();
 };
 
 
@@ -108,7 +137,7 @@ function bfs(node){
 				if(explored[c]){
 					continue;
 				}
-				if(neighbour){
+				if(neighbour && neighbour.isTraversable){
 					g.paintNode(neighbour.x, neighbour.y, '#9f95ad')
 					frontier.enqueue(neighbour)
 					explored[String([x,y])] = String([x,y]);
@@ -117,8 +146,10 @@ function bfs(node){
 			setTimeout(runBFS, 80)
 		}
 	}
-	runBFS()
-}
+	runBFS();
+};
+
+function astart(){};
 
 
 

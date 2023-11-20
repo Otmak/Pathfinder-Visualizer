@@ -8,7 +8,7 @@ class Grid{
 		this.ctx = ctx;
 		this.nodes = [];
 	}
-	
+
 
 	draw(x, y){
 		let context = this.ctx;
@@ -53,6 +53,7 @@ class Grid{
 			return;
 		}
 		node.color = color;
+		context.clearRect(x+1, y+1, this.columns-2, this.rows-2)
 		context.fillRect(x+1, y+1, this.columns-2, this.rows-2);
 	}
 
@@ -77,7 +78,7 @@ class Node{
 		this.y = y;
 		this.goal;
 		this.color;
-		this.traversable = true;
+		this.isTraversable = true;
 	}
 
 
