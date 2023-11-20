@@ -9,8 +9,28 @@
 <body>
 	<canvas id="canvas"></canvas>
 	<div id="text"></div>
-	<button onclick="startAlgorithm()"> Start </button>
+	<fieldset id="algo-selection-button">
+	<!-- 	<legend>Select The Algorithm :</legend>
+		<div>
+			<input type="radio" id="huey" name="drone" value="dfs" checked />
+			<label for="huey">Depth First Search (DFS)</label>
+		</div>
+		<div>
+			<input type="radio" id="dewey" name="drone" value="bfs" />
+			<label for="dewey">Breadth First Search (BFS)</label>
+		</div>
+		<div>
+			<input type="radio" id="louie" name="drone" value="astar" />
+			<label for="louie">A*</label>
+		</div> -->
+		<div>
+			<button onclick="startDFS()"> Start </button>
+		</div>
+
+	</fieldset> 
+
 	<script src="js/grid.js"></script>
+	<script src="js/data-structures.js"></script>
 	<script src="js/main.js"></script>
 </body>
 </html>

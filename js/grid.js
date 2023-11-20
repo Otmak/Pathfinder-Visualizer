@@ -8,6 +8,7 @@ class Grid{
 		this.ctx = ctx;
 		this.nodes = [];
 	}
+	
 
 	draw(x, y){
 		let context = this.ctx;
@@ -42,22 +43,33 @@ class Grid{
 		let j = y/this.rows;
 		let context = this.ctx;
 		let node = this.nodes[i][j];
-		if(node.color && !node.goal){
-			context.clearRect(x+1, y+1, this.columns-2, this.rows-2);
-			node.color =undefined;
-			node.goal =undefined;
+
+		context.fillStyle = color;
+		if( node.goal || node.start){
+			let goalColor = this.getNode(x,y).color ? this.nodes[i][j].color : color;
+			node.color = goalColor
+			context.fillStyle = goalColor;
+			context.fillRect(x+1, y+1, this.columns-2, this.rows-2);
 			return;
 		}
 		node.color = color;
-		context.fillStyle = color;
 		context.fillRect(x+1, y+1, this.columns-2, this.rows-2);
 	}
 
 
 	getNode(x, y){
-		return this.nodes[x][y];
+		let i = x/this.columns;
+		let j = y/this.rows;
+		let context = this.ctx;
+		try{
+			let node = this.nodes[i][j];
+			return node;
+		} catch (e){
+			return false;
+		}
 	}
 }
+
 
 class Node{
 	constructor(x, y){
@@ -65,5 +77,17 @@ class Node{
 		this.y = y;
 		this.goal;
 		this.color;
+		this.traversable = true;
+	}
+
+
+	getNeighbours(){
+		let up =[this.x, this.y - 30];
+		let right = [this.x + 30, this.y];
+		let down = [this.x, this.y + 30];
+		let left = [this.x - 30, this.y];
+
+		return [up, right, down, left];
 	}
 }
+

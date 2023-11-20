@@ -17,5 +17,15 @@ button{
 	cursor: pointer;
 	height: 50px;
 	position: fixed;
-	right: 0;
+	right: 50px;
+	bottom: 50px;
+}
+
+#algo-selection-button{
+	bottom: 50px;
+	position: fixed;
+}
+input{
+	margin: 0.4rem;
+	cursor: pointer;
 }
