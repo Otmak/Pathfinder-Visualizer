@@ -79,6 +79,7 @@ class Node{
 		this.goal;
 		this.color;
 		this.isTraversable = true;
+		this.parent;
 	}
 
 

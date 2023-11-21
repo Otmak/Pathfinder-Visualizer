@@ -11,15 +11,15 @@
 		<canvas id="canvas"></canvas>
 		<fieldset id="algo-selection-button">
 			<legend>Select An Algorithm :</legend>
-			<div class="toggle">
+			<div class="toggle" id="algorithms">
 				
-				<input disabled type="radio" name="sizeBy" value="weight" id="dfs" />
-				<label class="notavail" for="dfs" title="Depth First Search">DFS</label>
+				<input  type="radio" name="sizeBy" value="dfs" id="dfs" />
+				<label  for="dfs" title="Depth First Search">DFS</label>
 				
-				<input type="radio" name="sizeBy" value="bfs" id="bfs" checked/>
+				<input type="radio" name="sizeBy" value="bfs" id="bfs" />
 				<label for="bfs" title="Breadth First Search">BFS</label>
 				
-				<input disabled type="radio" name="sizeBy" value="dijkstra" id="dijkstra"   />
+				<input disabled type="radio" name="sizeBy" value="dijkstra" id="dijkstra" />
 				<label class="notavail" for="dijkstra" title="Dijkstra">Dijkstra</label>
 				
 				<input disabled type="radio" name="sizeBy" value="astar" id="astar" />
@@ -27,14 +27,19 @@
 				
 			</div>
 			<ul id="directions">
-				<li class="direction">Hold Shift & click to select goal</li>
-				<li class="goal">The Goal</li>
-				<li class="start">Starting Point</li>
-				<li class="visited">Visited</li>
-				<li class="blocked">Wall</li>
+				<li class="direction">-Hold Shift & left click to select goal</li>
+				<li class="direction">-Hold alt & click to for starting point</li>
+				<li class="direction">-Left click& or Drag mouse to create wall</li>
+				<li class="goal">The Goal.</li>
+				<li class="start">Starting Point.</li>
+				<li class="visited">Visited.</li>
+				<li class="blocked">Wall.</li>
 			</ul>
 			<div>
-				<button class="start-button" onclick="startDFS()"> Start </button>
+				<button class="start-button" onclick="startPathfindingAlgorithm()"> Start </button>
+			</div>
+			<div>
+				<button class="clear-button" onclick="clearAndStartGrid()"> Clear Grid </button>
 			</div>
 		</fieldset>
 	</div>

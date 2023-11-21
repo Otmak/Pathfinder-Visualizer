@@ -21,11 +21,37 @@ body{
 	position: fixed;
 }
 .start-button{
+		cursor: pointer;
+	height: 50px;
+	position: fixed;
+	right: 50px;
+	bottom: 50px;
+
+
 	background-color: white;
 	padding: 16px 32px;
   	color: black; 
   	border: 2px solid #f44336;
   	font-weight: bold;
+}
+.clear-button{
+	cursor: pointer;
+	height: 50px;
+	position: fixed;
+/*	right: 50px;*/
+	bottom: 50px;
+
+
+	background-color: white;
+	padding: 16px 32px;
+  	color: black; 
+  	border: 2px solid #515820;
+  	font-weight: bold;
+}
+
+.clear-button:hover{
+	background-color: grey;
+	color: white;
 }
 
 .start-button:hover{
@@ -48,6 +74,7 @@ li::marker{
 }
 .direction{
 	list-style: none;
+	font-size: 14px;
 }
 .blocked{
 	list-style-image: linear-gradient(#665351,#665351)
@@ -59,7 +86,7 @@ li::marker{
 	list-style-image: linear-gradient(#1aafc2,#1aafc2)
 }
 .goal{
-	list-style-image: linear-gradient(#d1572e,#d1572e)
+	list-style-image: linear-gradient(red,red)
 }
 
 canvas{
@@ -70,11 +97,11 @@ label{
 }
 
 button{
-	cursor: pointer;
+/*	cursor: pointer;
 	height: 50px;
 	position: fixed;
 	right: 50px;
-	bottom: 50px;
+	bottom: 50px;*/
 }
 
 #algo-selection-button{
