@@ -39,11 +39,10 @@ class Grid{
 
 
 	paintNode(x, y, color){
-		let i = x/this.columns;
-		let j = y/this.rows;
+		let i = Math.floor(x/this.columns);
+		let j = Math.floor(y/this.rows);
 		let context = this.ctx;
 		let node = this.nodes[i][j];
-
 		context.fillStyle = color;
 		if( node.goal || node.start){
 			let goalColor = this.getNode(x,y).color ? this.nodes[i][j].color : color;
@@ -58,6 +57,15 @@ class Grid{
 	}
 
 
+	clearNode(x,y){
+		let i = x/this.columns;
+		let j = y/this.rows;
+		let context = this.ctx;
+		// let node = this.nodes[i][j];
+		context.clearRect(x+1, y+1, this.columns-2, this.rows-2)
+	}
+
+
 	getNode(x, y){
 		let i = x/this.columns;
 		let j = y/this.rows;
@@ -69,7 +77,34 @@ class Grid{
 			return false;
 		}
 	}
-}
+
+
+	clearAllNodes(){
+		let startNode = this.getNode(0,0);
+		let frontier  = new Queue()
+		frontier.enqueue(startNode);
+		let explored = {}
+
+		while(!frontier.isEmpty()){
+			let currentNode = frontier.dequeue()
+			this.clearNode(currentNode.x, currentNode.y)
+			const successors = currentNode.getNeighbours()
+			for(let i = 0; i < successors.length; i++){
+				let [x,y] = successors[i];
+				let getNeighbourLocation = String([x,y]);
+				let neighbour = this.getNode(x,y);
+				if(explored[getNeighbourLocation] ){
+					continue;
+				}
+				if(neighbour ){
+					this.clearNode(neighbour.x, neighbour.y)
+					frontier.enqueue(neighbour)
+					explored[getNeighbourLocation] = getNeighbourLocation;
+				};
+			};
+		};
+	};
+};
 
 
 class Node{
@@ -79,6 +114,7 @@ class Node{
 		this.goal;
 		this.color;
 		this.isTraversable = true;
+		this.weight = 1;
 		this.parent;
 	}
 

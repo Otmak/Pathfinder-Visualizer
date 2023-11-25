@@ -9,7 +9,9 @@ body{
     align-items: center;*/
     font-family: Courier New, monospace;
 }
-
+#algorithms{
+	display: flex;
+}
 #main{
 	display: flex;
 	flex-direction: row;
@@ -88,6 +90,9 @@ li::marker{
 .goal{
 	list-style-image: linear-gradient(red,red)
 }
+.weight{
+	list-style-image: linear-gradient(#61aa55,#61aa55)
+}
 
 canvas{
 	cursor: pointer;
@@ -120,7 +125,7 @@ fieldset {
   display: block;
   border: none;
   border: solid 1px #ccc;
-  min-width: 0;
+/*  min-width: 0;*/
   background-color: #fff;
 }
 fieldset legend {
