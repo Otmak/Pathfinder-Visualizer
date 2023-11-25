@@ -28,8 +28,8 @@ let theGoal;
 
 function clearAndStartGrid(){
 	ctx.clearRect(0,0, canvas.width, canvas.height);
-	g = new Grid(ctx, canvasHeight, canvasWidth, nth, nth)
-	g.draw(0,0)
+	g = new Grid(ctx, canvasHeight, canvasWidth, nth, nth);
+	g.draw(0,0);
 	isOkayToRun = false;
 	algorithmHasran = false;
 }
