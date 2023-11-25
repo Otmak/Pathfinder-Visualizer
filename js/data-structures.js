@@ -1,46 +1,46 @@
 // 
 
 class Stack{
-	constructor(){
-		this.list = [];
-	}
+    constructor(){
+        this.list = [];
+    }
 
-	push(item){
-		return this.list.push(item);
-	}
+    push(item){
+        return this.list.push(item);
+    }
 
-	pop(){
-		return this.list.pop();
-	}
+    pop(){
+        return this.list.pop();
+    }
 
-	isEmpty(){
-		if(this.list.length <= 0){
-			return true;
-		}
-		return false;
-	}
+    isEmpty(){
+        if(this.list.length <= 0){
+            return true;
+        }
+        return false;
+    }
 }
 
 
 class Queue{
-	constructor(){
-		this.list = [];
-	}
+    constructor(){
+        this.list = [];
+    }
 
-	enqueue(item){
-		return this.list.push(item);;
-	}
+    enqueue(item){
+        return this.list.push(item);;
+    }
 
-	dequeue(){
-		return this.list.shift();
-	}
+    dequeue(){
+        return this.list.shift();
+    }
 
-	isEmpty(){
-		if(this.list.length <= 0){
-			return true;
-		}
-		return false;
-	}
+    isEmpty(){
+        if(this.list.length <= 0){
+            return true;
+        }
+        return false;
+    }
 }
 
 
@@ -114,10 +114,10 @@ class PriorityQueue {
     return min;
   }
 
-  	isEmpty(){
-		if(this.values.length <= 0){
-			return true;
-		}
-		return false;
-	}
+    isEmpty(){
+        if(this.values.length <= 0){
+            return true;
+        }
+        return false;
+    }
 }
