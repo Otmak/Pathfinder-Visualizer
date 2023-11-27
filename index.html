@@ -24,27 +24,30 @@
                 <input type="radio" name="sizeBy" value="dijkstra" id="dijkstra" />
                 <label for="dijkstra" title="Dijkstra">Dijkstra</label>
                 
+           <!--      <input type="radio" name="sizeBy" value="gbfs" id="gbfs" />
+                <label for="gbfs" title="Greedy Best First Search">GBFS</label>  -->
+
                 <input type="radio" name="sizeBy" value="astar" id="astar" />
-                <label for="astar" title="A start">A*</label>
+                <label for="astar" title="A start">A*</label> 
                 
             </div>
             <ul id="directions">
-                <li class="direction">-Hold Shift & left click to select goal</li>
-                <li class="direction">-Hold alt & click to for starting point</li>
-                <li class="direction">-Left click& or Drag mouse to create wall</li>
-                <li class="direction">-Click a Wall to turn it into weight</li>
-                <li class="goal">The Goal.</li>
-                <li class="start">Starting Point.</li>
-                <li class="visited">Visited.</li>
-                <li class="blocked">Wall.</li>
-                <li class="weight">Weighted node.</li>
+                <!-- <li class="direction">- Hold Shift &left click to select goal</li> -->
+                <!-- <li class="direction">- Hold alt &click for starting point</li> -->
+                <li class="direction">- Left click or click&Drag mouse to create walls</li>
+                <li class="direction">- Click a wall to turn it into weight</li>
+                <li class="goal">The Goal</li>
+                <li class="start">Starting Point</li>
+                <li class="visited">Visited</li>
+                <li class="blocked">Wall</li>
+                <li class="weight">Weighted node</li>
             </ul>
             <div>
                 <button class="start-button" onclick="startPathfindingAlgorithm()"> Start </button>
             </div>
             <div>
-                <button class="clear-button" onclick="clearAndStartGrid()"> Clear Grid </button>
-                <!-- <button class="clear-button" onclick="clearCells()"> Clear Grid </button> -->
+                <!-- <button class="clear-button" onclick="clearAndStartGrid()"> Clear Grid </button> -->
+                <button class="clear-button" onclick="clearCells()"> Clear Grid </button>
             </div>
         </fieldset>
     </div>

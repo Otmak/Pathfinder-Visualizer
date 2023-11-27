@@ -2,120 +2,182 @@
 const textOfCoodinate = document.getElementById('text');
 const canvas = document.getElementById("canvas");
 const getButtons = document.getElementById("algorithms");
-// const canvasBody = document.getElementById("canvas-div");
-// const algoButtons = document.getElementById("algo-selection-button");
-// const wMax = window.innerWidth;
-// const wBSub = (wMax *10)/100;
-// let wSub = (wMax * 80)/100 ;
-// canvasBody.style.width = `${wSub}px`;
-// algoButtons.style.width = `${wBSub}px`
+const ctx = canvas.getContext("2d");
 
-const canvasHeight = 900;
-const canvasWidth = 900;
+const canvasHeight = 960; // 960 = 80,60,40,30,20
+const canvasWidth = 960;
 canvas.height = canvasHeight;
 canvas.width = canvasWidth;
-const ctx = canvas.getContext("2d");
 let startNode;
 let selectedAlgorithm;
-const nth = 30;
+const n = 30;
+const nth = canvasWidth/n;
 let isMousedown = false;
 let algorithmHasran = false;
 let isOkayToRun = true;
-// 665351
 let setOfMouseDownNodes = {}
-let g;
+let GRID;
 let theGoal;
+let movingStart = false;
+let movingGoal = false;
+
 
 function clearAndStartGrid(){
     ctx.clearRect(0,0, canvas.width, canvas.height);
-    g = new Grid(ctx, canvasHeight, canvasWidth, nth, nth);
-    g.draw(0,0);
+    GRID = new Grid(ctx, canvasHeight, canvasWidth, n, n, nth);
+    GRID.draw(0,0);
     isOkayToRun = false;
     algorithmHasran = false;
 }
 clearAndStartGrid();
 
+
 function clearCells(){
-    g.clearAllNodes();
-}
+    return GRID.clearAllNodes();
+};
 
 
 getButtons.addEventListener('click',(e)=>{
     if(e.target.nodeName === 'INPUT'){
         selectedAlgorithm = e.target.value;
-    }
+    };
 });
 
 
 canvas.addEventListener('click', (e)=>{
     isOkayToRun =true;
-    let x = roundToNearestNTH(e.x);
-    let y = roundToNearestNTH(e.y);
-    let node = g.getNode(x, y);
+    const {x, y, node} = getXYandNodeOnEvent(e);
     if(e.shiftKey){
-        node.goal = true;
-        theGoal = g.getNode(x,y);
-        return g.paintNode(x, y, 'red');
-    }
+        return setTheGoal(x,y);
+    };
     if(e.altKey){
-        return startingPoint(x,y)
-    }
+        return setStartingPoint(x,y)
+    };
     if(!node.goal){
         wallOrWeightOrClear(node)
-    }
-
+    };
 });
 
 
 function wallOrWeightOrClear(node){
 
-    if(node.weight > 1 && !node.wall || node.start ){
+    // if(node.weight > 1 && !node.wall || node.start ){
+    //     node.weight = 1;
+    //     node.start = false;
+    //     g.clearNode(node.x, node.y)
+    //     return;
+    // }
+if(node.weight > 1 && !node.wall  ){
         node.weight = 1;
         node.start = false;
-        g.clearNode(node.x, node.y)
+        node.weighted = false;
+        GRID.clearNode(node.x, node.y)
         return;
-    }
+    };
 
     if(!node.isTraversable ){
         let addWeight = node.weight + Math.random() * 5;
         node.isTraversable = true;
         node.weight = addWeight;
-        g.paintNode(node.x, node.y, '#61aa55')
+        node.weighted = true;
+        GRID.paintNode(node.x, node.y, '#61aa55')
         return ;
-    }
+    };
 
     if(node.weight==1 ){
         node.isTraversable = false;
-        g.paintNode(node.x, node.y, '#584846')
+        GRID.paintNode(node.x, node.y, '#584846')
         return;
-    }
+    };
 };
+
+
+canvas.addEventListener('mousedown',(e)=>{
+    const {x, y, node} = getXYandNodeOnEvent(e);
+    isMousedown = true;
+
+      if(node.start){
+        movingStart = true;
+        node.start = false;
+        GRID.clearNode(x,y)
+        // canvas.style.cursor = 'grabbing';
+    };
+    if (node.goal){
+        movingGoal = true;
+        node.goal = false;
+        GRID.clearNode(x,y)
+    }
+});
 
 
 canvas.addEventListener('mousemove', (e)=>{
     textOfCoodinate.innerText = `x:${e.x}  y:${e.y}`;
-    let x = roundToNearestNTH(e.x);
-    let y = roundToNearestNTH(e.y);
-    let node = g.getNode(x, y);
-    if(isMousedown&& !node.goal ){
+    const {x, y, node} = getXYandNodeOnEvent(e);
+    if(isMousedown&& !movingGoal && !movingStart ){
         node.isTraversable = false;
-        g.paintNode(x, y, '#665351');
+        GRID.paintNode(x, y, '#665351');
         // wallOrWeightOrClear(node);
-    }
+    };
 
+    if (node.start || node.goal){
+        canvas.style.cursor = 'grab';
+    }else{
+        canvas.style.cursor = 'pointer';
+    };
+
+    if(movingStart){
+        canvas.style.cursor = 'grabbing';
+        setStartingPoint(x,y)
+        node.color = '';
+        node.start = false;
+        GRID.paintNode(x, y, 'purple')
+        setTimeout(()=>{
+            GRID.clearNode(x,y)
+        }, 2);
+    };
+
+    if(movingGoal){
+        canvas.style.cursor = 'grabbing';
+        setTheGoal(x,y);
+        node.color = '';
+        node.goal = false;
+        GRID.paintNode(x, y, 'red')
+        setTimeout(()=>{
+            GRID.clearNode(x,y)
+        }, 2);
+    };
 });
-
-
-canvas.addEventListener('mousedown',(e)=>{
-    let x = roundToNearestNTH(e.x);
-    let y = roundToNearestNTH(e.y);
-    isMousedown = true;
-})
 
 
 canvas.addEventListener('mouseup', (e)=>{
-        isMousedown = false;
+    const {x,y,node} = getXYandNodeOnEvent(e);
+    isMousedown = false;
+    if(movingStart){
+
+        GRID.paintNode(x, y, 'purple');
+        node.start = true;
+        setStartingPoint(x,y);
+        movingStart =false;
+    };
+    if(movingGoal){
+        GRID.paintNode(x, y, 'red');
+        node.goal = true;
+        setTheGoal(x,y);
+        movingGoal =false;
+    };
 });
+
+
+function getXYandNodeOnEvent(event){
+    let x = roundToNearestNTH(event.x); // DRY
+    let y = roundToNearestNTH(event.y);
+    let node = GRID.getNode(x,y);
+    return{
+        x:x,
+        y:y,
+        node:node
+    };
+};
 
 
 // // Round to the lowest nth.
@@ -124,12 +186,20 @@ function roundToNearestNTH(num){
 }
 
 
-function startingPoint(x,y){
-    startNode = g.getNode(x,y);
-    startNode.start =true
-    g.paintNode(x, y, 'purple')
-}
-startingPoint(420,300);
+function setStartingPoint(x,y){
+    startNode = GRID.getNode(x,y);
+    startNode.start =true;
+    GRID.paintNode(x, y, 'purple')
+};
+setStartingPoint(canvasWidth/3,canvasWidth/3);
+
+
+function setTheGoal(x,y){
+    theGoal = GRID.getNode(x,y);
+    theGoal.goal =true;
+    GRID.paintNode(x, y, 'red');
+};
+setTheGoal(canvasWidth-nth, canvasWidth-nth);
 
 
 // Depth first Search algorithm.
@@ -138,31 +208,30 @@ function dfs(node){
     let frontier  = new Stack()
     frontier.push(node);
     let explored = {}
-    let c;
 
     function runDFS(){
         if(!frontier.isEmpty() && isOkayToRun){
             let currentNode = frontier.pop();
-            g.paintNode(currentNode.x, currentNode.y, '#1aafc2')// 837695 1aadc0
+            GRID.paintNode(currentNode.x, currentNode.y, '#1aafc2')// 837695 1aadc0
             if(currentNode.goal){
                 return getPath(currentNode);;
             };
             const successors = currentNode.getNeighbours()
             for(let i = 0; i < successors.length; i++){
                 let [x,y] = successors[i];
-                c = String([x,y]);
-                let neighbour = g.getNode(x,y);
-                if(explored[c]){
+                let getNeighbourLocation = String([x,y]);
+                let neighbour = GRID.getNode(x,y);
+                if(explored[getNeighbourLocation]){
                     continue ;
                 };
                 if(neighbour && neighbour.isTraversable){
                     neighbour.parent = currentNode
-                    g.paintNode(neighbour.x, neighbour.y, '#9f95ad')
+                    GRID.paintNode(neighbour.x, neighbour.y, '#9f95ad')
                     frontier.push(neighbour)
-                    explored[String([x,y])] = String([x,y]);
+                    explored[getNeighbourLocation] = getNeighbourLocation;
                 };
             };
-            setTimeout(runDFS, 40)
+            setTimeout(runDFS, 10)
         };
     };
     runDFS();
@@ -175,31 +244,30 @@ function bfs(node){
     let frontier  = new Queue()
     frontier.enqueue(node);
     let explored = {}
-    let c;
 
     function runBFS(){
         if(!frontier.isEmpty() && isOkayToRun){
             let currentNode = frontier.dequeue()
-            g.paintNode(currentNode.x, currentNode.y, '#1aadc0')
+            GRID.paintNode(currentNode.x, currentNode.y, '#1aadc0');
             if(currentNode.goal){
                 return getPath(currentNode);
             };
-            const successors = currentNode.getNeighbours()
+            const successors = currentNode.getNeighbours();
             for(let i = 0; i < successors.length; i++){
                 let [x,y] = successors[i];
-                c = String([x,y]);
-                let neighbour = g.getNode(x,y);
-                if(explored[c]){
+                let getNeighbourLocation = String([x,y]);
+                let neighbour = GRID.getNode(x,y);
+                if(explored[getNeighbourLocation]){
                     continue;
                 };
                 if(neighbour && neighbour.isTraversable){
                     neighbour.parent = currentNode
-                    g.paintNode(neighbour.x, neighbour.y, '#9f95ad')
+                    GRID.paintNode(neighbour.x, neighbour.y, '#9f95ad')
                     frontier.enqueue(neighbour)
-                    explored[String([x,y])] = String([x,y]);
+                    explored[getNeighbourLocation] = getNeighbourLocation;
                 };
             };
-            setTimeout(runBFS, 40)
+            setTimeout(runBFS, 10)
         };
     };
     runBFS();
@@ -209,7 +277,7 @@ function bfs(node){
 // Dijkstra algorithm.
 function dijkstra(node){
     algorithmHasran = true;
-    let frontier  = new PriorityQueue()
+    let frontier  = new PriorityQueue();
     frontier.enqueue(node, node.weight);
     let costSoFar = {}
 
@@ -218,27 +286,27 @@ function dijkstra(node){
             let currentWeightedNode = frontier.dequeue();
             let currentNode = currentWeightedNode.value;
             let currentWeight = currentWeightedNode.priority
-            g.paintNode(currentNode.x, currentNode.y, '#1aadc0')
+            GRID.paintNode(currentNode.x, currentNode.y, '#1aadc0')
             if(currentNode.goal){
                 return getPath(currentNode);
             };
 
-            const successors = currentNode.getNeighbours()
+            const successors = currentNode.getNeighbours();
             for(let i = 0; i < successors.length; i++){
                 let [x,y] = successors[i];
-                let getLocation = String([x,y]);
-                let neighbour = g.getNode(x,y);
+                let getNeighbourLocation = String([x,y]);
+                let neighbour = GRID.getNode(x,y);
                 let newCost = neighbour ? currentWeight + neighbour.weight : 0;
 
-                if( (neighbour && neighbour.isTraversable) && (!costSoFar[getLocation] || newCost < neighbour.weight) ){
+                if( (neighbour && neighbour.isTraversable) && (!costSoFar[getNeighbourLocation] || newCost < neighbour.weight) ){
                     neighbour.parent = currentNode
-                    g.paintNode(neighbour.x, neighbour.y, '#9f95ad')
+                    GRID.paintNode(neighbour.x, neighbour.y, '#9f95ad')
 
                     frontier.enqueue(neighbour, newCost)
-                    costSoFar[getLocation] = newCost;
+                    costSoFar[getNeighbourLocation] = newCost;
                 };
             };
-            setTimeout(runDijkstra, 40)
+            setTimeout(runDijkstra, 10)
         };
     };
     runDijkstra();
@@ -255,7 +323,7 @@ function heuristic(a,b){
 function astar(node){
     algorithmHasran = true;
     let frontier  = new PriorityQueue()
-    frontier.enqueue(node, node.weight);
+    frontier.enqueue(node, 0);
     let costSoFar = {}
 
     function runAstart(){
@@ -263,7 +331,7 @@ function astar(node){
             let currentWeightedNode = frontier.dequeue();
             let currentNode = currentWeightedNode.value;
             let currentWeight = currentWeightedNode.priority
-            g.paintNode(currentNode.x, currentNode.y, '#1aadc0');
+            GRID.paintNode(currentNode.x, currentNode.y, '#1aadc0');
             if(currentNode.goal){
                 return getPath(currentNode);
             };
@@ -272,19 +340,19 @@ function astar(node){
             for(let i = 0; i < successors.length; i++){
                 let [x,y] = successors[i];
                 let getNeighbourLocation = String([x,y]);
-                let neighbour = g.getNode(x,y);
-                let newCost = neighbour ? currentWeight + neighbour.weight : 0;
+                let neighbour = GRID.getNode(x,y);
+                let newCost = neighbour ? currentWeight + neighbour.weight : 1;
 
                 if( (neighbour && neighbour.isTraversable) && (!costSoFar[getNeighbourLocation] || newCost < costSoFar[getNeighbourLocation]) ){
 
                     neighbour.parent = currentNode
-                    g.paintNode(neighbour.x, neighbour.y, '#9f95ad');
+                    GRID.paintNode(neighbour.x, neighbour.y, '#9f95ad');
                     let priority = newCost + heuristic(theGoal, neighbour);
                     frontier.enqueue(neighbour, priority)
                     costSoFar[getNeighbourLocation] = newCost;
                 };
             };
-            setTimeout(runAstart, 40);
+            setTimeout(runAstart, 10);
         };
     };
     runAstart();
@@ -303,7 +371,7 @@ function greedyBestFirstSearch(node){
             let currentWeightedNode = frontier.dequeue();
             let currentNode = currentWeightedNode.value;
             let currentWeight = currentWeightedNode.priority
-            g.paintNode(currentNode.x, currentNode.y, '#1aadc0')
+            GRID.paintNode(currentNode.x, currentNode.y, '#1aadc0')
             if(currentNode.goal){
                 return getPath(currentNode);
             }
@@ -312,7 +380,7 @@ function greedyBestFirstSearch(node){
             for(let i = 0; i < successors.length; i++){
                 let [x,y] = successors[i];
                 let getNeighbourLocation = String([x,y]);
-                let neighbour = g.getNode(x,y);
+                let neighbour = GRID.getNode(x,y);
                 let newCost = neighbour ? currentWeight + neighbour.weight : 0;
 
                 if(costSoFar[getNeighbourLocation]){
@@ -320,7 +388,7 @@ function greedyBestFirstSearch(node){
                 };
                 if( (neighbour && neighbour.isTraversable) && !costSoFar[getNeighbourLocation]  ){
                     neighbour.parent = currentNode
-                    g.paintNode(neighbour.x, neighbour.y, '#9f95ad');
+                    GRID.paintNode(neighbour.x, neighbour.y, '#9f95ad');
                     let priority = heuristic(theGoal, neighbour);
                     frontier.enqueue(neighbour, priority)
                     costSoFar[getNeighbourLocation] = newCost;
@@ -341,10 +409,10 @@ function getPath(node){
     };
     if(node.parent){
         currentNode = node.parent
-        g.paintNode(currentNode.x, currentNode.y, '#abba45')
+        GRID.paintNode(currentNode.x, currentNode.y, '#abba45')
         setTimeout(()=>{
             getPath(currentNode)
-        }, 50)
+        }, 5)
         return;
     };
 };
@@ -354,7 +422,8 @@ function getPath(node){
 function startPathfindingAlgorithm(){ // not scalable.
     if(algorithmHasran){
         algorithmHasran = false;
-        return clearAndStartGrid()
+        isOkayToRun = false;
+        return clearCells();
     };
     if(selectedAlgorithm){
         isOkayToRun =true;
@@ -367,10 +436,22 @@ function startPathfindingAlgorithm(){ // not scalable.
         if(selectedAlgorithm === 'dijkstra'){
             return dijkstra(startNode);
         };
+        // if(selectedAlgorithm === 'gbfs'){
+        //     return greedyBestFirstSearch(startNode);
+        // };
         if(selectedAlgorithm === 'astar'){
             return astar(startNode);
         };
         
     };
 };
+
+
+// const canvasBody = document.getElementById("canvas-div");
+// const algoButtons = document.getElementById("algo-selection-button");
+// const wMax = window.innerWidth;
+// const wBSub = (wMax *10)/100;
+// let wSub = (wMax * 80)/100 ;
+// canvasBody.style.width = `${wSub}px`;
+// algoButtons.style.width = `${wBSub}px`
 

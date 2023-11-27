@@ -1,11 +1,12 @@
 // By Otuma.
 class Grid{
-    constructor(ctx, width, height, rows, columns){
+    constructor(ctx, width, height, rows, columns, cellSize){
         this.width = width;
         this.height = height;
         this.rows = rows;
         this.columns = columns;
         this.ctx = ctx;
+        this.cellSize = cellSize;
         this.nodes = [];
     }
 
@@ -19,7 +20,7 @@ class Grid{
         for(let i = x; i < width; i += width/this.columns){
             let arrayOfRows = new Array();
             for(let j = y; j < height; j += height/this.rows){
-                arrayOfRows.push(new Node(i, j));
+                arrayOfRows.push(new Node(i, j, this.cellSize));
             }
             this.nodes.push(arrayOfRows);
         }
@@ -39,36 +40,36 @@ class Grid{
 
 
     paintNode(x, y, color){
-        let i = Math.floor(x/this.columns);
-        let j = Math.floor(y/this.rows);
+        let i = Math.floor(x/this.cellSize);
+        let j = Math.floor(y/this.cellSize);
         let context = this.ctx;
         let node = this.nodes[i][j];
         context.fillStyle = color;
+
         if( node.goal || node.start){
             let goalColor = this.getNode(x,y).color ? this.nodes[i][j].color : color;
             node.color = goalColor
             context.fillStyle = goalColor;
-            context.fillRect(x+1, y+1, this.columns-2, this.rows-2);
+            context.fillRect(x+1, y+1, this.cellSize-2, this.cellSize-2);
             return;
         }
         node.color = color;
-        context.clearRect(x+1, y+1, this.columns-2, this.rows-2)
-        context.fillRect(x+1, y+1, this.columns-2, this.rows-2);
+        context.clearRect(x+1, y+1, this.cellSize-2, this.cellSize-2)
+        context.fillRect(x+1, y+1, this.cellSize-2, this.cellSize-2);
     }
 
 
     clearNode(x,y){
-        let i = x/this.columns;
-        let j = y/this.rows;
+        let i = Math.floor(x/this.cellSize);
+        let j = Math.floor(y/this.cellSize);
         let context = this.ctx;
-        // let node = this.nodes[i][j];
-        context.clearRect(x+1, y+1, this.columns-2, this.rows-2)
+        context.clearRect(x+1, y+1, this.cellSize-2, this.cellSize-2)
     }
 
 
     getNode(x, y){
-        let i = x/this.columns;
-        let j = y/this.rows;
+        let i = Math.floor(x/this.cellSize);
+        let j = Math.floor(y/this.cellSize);
         let context = this.ctx;
         try{
             let node = this.nodes[i][j];
@@ -81,12 +82,19 @@ class Grid{
 
     clearAllNodes(){
         let startNode = this.getNode(0,0);
+        let isOkayToRun =false;
         let frontier  = new Queue()
         frontier.enqueue(startNode);
         let explored = {}
 
         while(!frontier.isEmpty()){
             let currentNode = frontier.dequeue()
+            if(currentNode.start || currentNode.goal || !currentNode.isTraversable || currentNode.weighted){
+                if(currentNode.weighted){ // TBD
+                  this.paintNode(currentNode.x,currentNode.y, "#61aa55")
+                }
+                continue;
+            }
             this.clearNode(currentNode.x, currentNode.y)
             const successors = currentNode.getNeighbours()
             for(let i = 0; i < successors.length; i++){
@@ -97,20 +105,22 @@ class Grid{
                     continue;
                 }
                 if(neighbour ){
-                    this.clearNode(neighbour.x, neighbour.y)
+                    // this.clearNode(neighbour.x, neighbour.y)
                     frontier.enqueue(neighbour)
                     explored[getNeighbourLocation] = getNeighbourLocation;
                 };
             };
         };
+    return isOkayToRun;
     };
 };
 
 
 class Node{
-    constructor(x, y){
+    constructor(x, y, cellSize){
         this.x = x;
         this.y = y;
+        this.cellSize = cellSize;
         this.goal;
         this.color;
         this.isTraversable = true;
@@ -120,10 +130,10 @@ class Node{
 
 
     getNeighbours(){
-        let up =[this.x, this.y - 30];
-        let right = [this.x + 30, this.y];
-        let down = [this.x, this.y + 30];
-        let left = [this.x - 30, this.y];
+        let up =[this.x, this.y - this.cellSize];
+        let right = [this.x + this.cellSize, this.y];
+        let down = [this.x, this.y + this.cellSize];
+        let left = [this.x - this.cellSize, this.y];
 
         return [up, right, down, left];
     }

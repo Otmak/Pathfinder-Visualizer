@@ -1,49 +1,5 @@
 // 
 
-class Stack{
-    constructor(){
-        this.list = [];
-    }
-
-    push(item){
-        return this.list.push(item);
-    }
-
-    pop(){
-        return this.list.pop();
-    }
-
-    isEmpty(){
-        if(this.list.length <= 0){
-            return true;
-        }
-        return false;
-    }
-}
-
-
-class Queue{
-    constructor(){
-        this.list = [];
-    }
-
-    enqueue(item){
-        return this.list.push(item);;
-    }
-
-    dequeue(){
-        return this.list.shift();
-    }
-
-    isEmpty(){
-        if(this.list.length <= 0){
-            return true;
-        }
-        return false;
-    }
-}
-
-
 // class PriorityQueue{}
 class PValue {
   constructor(value, priority) {
@@ -51,6 +7,7 @@ class PValue {
     this.priority = priority;
   }
 }
+
 
 class PriorityQueue {
   constructor() {
@@ -121,3 +78,49 @@ class PriorityQueue {
         return false;
     }
 }
+
+
+
+class Stack{
+    constructor(){
+        this.list = [];
+    }
+
+    push(item){
+        return this.list.push(item);
+    }
+
+    pop(){
+        return this.list.pop();
+    }
+
+    isEmpty(){
+        if(this.list.length <= 0){
+            return true;
+        }
+        return false;
+    }
+}
+
+
+class Queue{
+    constructor(){
+        this.list = [];
+    }
+
+    enqueue(item){
+        return this.list.push(item);;
+    }
+
+    dequeue(){
+        return this.list.shift();
+    }
+
+    isEmpty(){
+        if(this.list.length <= 0){
+            return true;
+        }
+        return false;
+    }
+}
+
