@@ -72,7 +72,7 @@ body{
     cursor: not-allowed;
 }
 li::marker{
-  font-size: 3.5rem;
+  font-size: 2.5rem;
 }
 .direction{
     list-style: none;
@@ -92,6 +92,9 @@ li::marker{
 }
 .weight{
     list-style-image: linear-gradient(#61aa55,#61aa55)
+}
+.neighbour{
+    list-style-image: linear-gradient(#9f95ad,#9f95ad)
 }
 
 canvas{

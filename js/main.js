@@ -2,6 +2,7 @@
 const textOfCoodinate = document.getElementById('text');
 const canvas = document.getElementById("canvas");
 const getButtons = document.getElementById("algorithms");
+const gridSizeSelected = document.getElementById("grid-selected");
 const ctx = canvas.getContext("2d");
 
 const canvasHeight = 960; // 960 = 80,60,40,30,20
@@ -10,8 +11,10 @@ canvas.height = canvasHeight;
 canvas.width = canvasWidth;
 let startNode;
 let selectedAlgorithm;
-const n = 30;
-const nth = canvasWidth/n;
+let gridSize;
+let n = 30;
+let nth = canvasWidth/n;
+const cellSize = (x, h)=> h/x;
 let isMousedown = false;
 let algorithmHasran = false;
 let isOkayToRun = true;
@@ -23,8 +26,9 @@ let movingGoal = false;
 
 
 function clearAndStartGrid(){
+
     ctx.clearRect(0,0, canvas.width, canvas.height);
-    GRID = new Grid(ctx, canvasHeight, canvasWidth, n, n, nth);
+    GRID = new Grid(ctx, canvasHeight, canvasWidth, n, n, cellSize(n,canvasHeight));
     GRID.draw(0,0);
     isOkayToRun = false;
     algorithmHasran = false;
@@ -35,6 +39,16 @@ clearAndStartGrid();
 function clearCells(){
     return GRID.clearAllNodes();
 };
+
+
+gridSizeSelected.addEventListener('change',(e)=>{
+    n = Number(e.target.value);
+    const cell = cellSize(n,canvasHeight);
+    clearAndStartGrid();
+
+    setTheGoal(canvasWidth-cell, canvasWidth-cell);
+    setStartingPoint(cell,cell);
+})
 
 
 getButtons.addEventListener('click',(e)=>{
@@ -76,7 +90,7 @@ if(node.weight > 1 && !node.wall  ){
     };
 
     if(!node.isTraversable ){
-        let addWeight = node.weight + Math.random() * 5;
+        let addWeight = node.weight + Math.random() * 10;
         node.isTraversable = true;
         node.weight = addWeight;
         node.weighted = true;
@@ -180,18 +194,19 @@ function getXYandNodeOnEvent(event){
 };
 
 
-// // Round to the lowest nth.
+// Round to the lowest nth.
 function roundToNearestNTH(num){
-    return num < Math.round(num /nth)*nth ? Math.round(num /nth)*nth -nth  : Math.round(num /nth)*nth;
+    const NTH = cellSize(n,canvasHeight);
+    return num < Math.round(num /NTH)*NTH ? Math.round(num /NTH)*NTH -NTH  : Math.round(num /NTH)*NTH;
 }
 
 
 function setStartingPoint(x,y){
     startNode = GRID.getNode(x,y);
     startNode.start =true;
-    GRID.paintNode(x, y, 'purple')
+    GRID.paintNode(x, y, 'purple');
 };
-setStartingPoint(canvasWidth/3,canvasWidth/3);
+setStartingPoint(nth,nth);
 
 
 function setTheGoal(x,y){
@@ -267,7 +282,7 @@ function bfs(node){
                     explored[getNeighbourLocation] = getNeighbourLocation;
                 };
             };
-            setTimeout(runBFS, 10)
+            setTimeout(runBFS, 8)
         };
     };
     runBFS();
@@ -306,7 +321,7 @@ function dijkstra(node){
                     costSoFar[getNeighbourLocation] = newCost;
                 };
             };
-            setTimeout(runDijkstra, 10)
+            setTimeout(runDijkstra, 8)
         };
     };
     runDijkstra();
@@ -352,7 +367,7 @@ function astar(node){
                     costSoFar[getNeighbourLocation] = newCost;
                 };
             };
-            setTimeout(runAstart, 10);
+            setTimeout(runAstart, 8);
         };
     };
     runAstart();

@@ -32,6 +32,18 @@
                 
             </div>
             <ul id="directions">
+
+                        <!-- &nbsp;&nbsp;&nbsp; -->
+                <label> <strong>Resize Grid: </strong> </label>
+                <select id="grid-selected">
+                    <option value="20">20x20</option>
+                    <option selected value="30">30x30</option>
+                    <option value="40">40x40</option>
+                    <option value="60">60x60</option>
+                    <option value="80">80x80</option>
+                </select>
+
+
                 <!-- <li class="direction">- Hold Shift &left click to select goal</li> -->
                 <!-- <li class="direction">- Hold alt &click for starting point</li> -->
                 <li class="direction">- Left click or click&Drag mouse to create walls</li>
@@ -41,6 +53,7 @@
                 <li class="visited">Visited</li>
                 <li class="blocked">Wall</li>
                 <li class="weight">Weighted node</li>
+                <li class="neighbour">Neighbour</li>
             </ul>
             <div>
                 <button class="start-button" onclick="startPathfindingAlgorithm()"> Start </button>

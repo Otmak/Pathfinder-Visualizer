@@ -54,7 +54,7 @@ class Grid{
             return;
         }
         node.color = color;
-        context.clearRect(x+1, y+1, this.cellSize-2, this.cellSize-2)
+        context.clearRect(x+1, y+1, this.cellSize-2, this.cellSize-2);
         context.fillRect(x+1, y+1, this.cellSize-2, this.cellSize-2);
     }
 
@@ -80,6 +80,34 @@ class Grid{
     }
 
 
+    animatePaint(x, y, color){
+
+        let cellSize = this.cellSize;
+        let i = x * 0.5;
+        let j = y  * 0.5;
+        let context = this.ctx;
+
+        let dx = 0;
+        let dy = 0;
+
+        context.fillStyle = color;
+
+        function animate(){
+            context.clearRect(x+1, y+1, cellSize-2, cellSize-2);
+            context.fillRect(x+1, y+1, dx, dy);
+
+            i-=1;
+            j-=1;
+            dx+=2;
+            dy+=2;
+
+            if(i <= 0) return;
+            requestAnimationFrame(animate);
+        };
+        requestAnimationFrame(animate);
+    };
+
+
     clearAllNodes(){
         let startNode = this.getNode(0,0);
         let isOkayToRun =false;
@@ -89,13 +117,11 @@ class Grid{
 
         while(!frontier.isEmpty()){
             let currentNode = frontier.dequeue()
-            if(currentNode.start || currentNode.goal || !currentNode.isTraversable || currentNode.weighted){
-                if(currentNode.weighted){ // TBD
-                  this.paintNode(currentNode.x,currentNode.y, "#61aa55")
-                }
-                continue;
+            if(currentNode.start || currentNode.goal || !currentNode.isTraversable ) continue;
+            this.clearNode(currentNode.x, currentNode.y);
+            if(currentNode.weighted){
+                this.paintNode(currentNode.x,currentNode.y, "#61aa55");
             }
-            this.clearNode(currentNode.x, currentNode.y)
             const successors = currentNode.getNeighbours()
             for(let i = 0; i < successors.length; i++){
                 let [x,y] = successors[i];
@@ -105,7 +131,6 @@ class Grid{
                     continue;
                 }
                 if(neighbour ){
-                    // this.clearNode(neighbour.x, neighbour.y)
                     frontier.enqueue(neighbour)
                     explored[getNeighbourLocation] = getNeighbourLocation;
                 };
