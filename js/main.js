@@ -321,7 +321,7 @@ function dijkstra(node){
                     costSoFar[getNeighbourLocation] = newCost;
                 };
             };
-            setTimeout(runDijkstra, 8)
+            setTimeout(runDijkstra, 7)
         };
     };
     runDijkstra();
@@ -367,7 +367,7 @@ function astar(node){
                     costSoFar[getNeighbourLocation] = newCost;
                 };
             };
-            setTimeout(runAstart, 8);
+            setTimeout(runAstart, 7);
         };
     };
     runAstart();

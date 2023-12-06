@@ -22,6 +22,10 @@ body{
     right: 0;
     position: fixed;
 }
+
+.footer-notes{
+    display: inline;
+}
 .start-button{
         cursor: pointer;
     height: 50px;
