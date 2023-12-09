@@ -1,6 +1,4 @@
-// 
 
-// class PriorityQueue{}
 class PValue {
   constructor(value, priority) {
     this.value = value;
@@ -32,14 +30,15 @@ class PriorityQueue {
     }
   }
 
+
   dequeue() {
     const min = this.values[0];
     const end = this.values.pop();
     this.values[0] = end;
-
     let index = 0;
     const length = this.values.length;
     const current = this.values[0];
+
     while (true) {
       let leftChildIndex = 2 * index + 1;
       let rightChildIndex = 2 * index + 2;
@@ -78,7 +77,6 @@ class PriorityQueue {
         return false;
     }
 }
-
 
 
 class Stack{

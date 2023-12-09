@@ -75,19 +75,13 @@ canvas.addEventListener('click', (e)=>{
 
 function wallOrWeightOrClear(node){
 
-    // if(node.weight > 1 && !node.wall || node.start ){
-    //     node.weight = 1;
-    //     node.start = false;
-    //     g.clearNode(node.x, node.y)
-    //     return;
-    // }
-if(node.weight > 1 && !node.wall  ){
-        node.weight = 1;
-        node.start = false;
-        node.weighted = false;
-        GRID.clearNode(node.x, node.y)
-        return;
-    };
+    if(node.weight > 1 && !node.wall  ){
+            node.weight = 1;
+            node.start = false;
+            node.weighted = false;
+            GRID.clearNode(node.x, node.y)
+            return;
+        };
 
     if(!node.isTraversable ){
         let addWeight = node.weight + Math.random() * 10;
